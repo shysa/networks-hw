@@ -2,8 +2,10 @@
 #include <bitset>
 #include <map>
 
+// Функция, определяющая вычет (остаток от деления с XOR)
+// ОПРЕДЕЛЯЕТ ОБРАЗУЮЩИЙ ПОЛИНОМ
 template <std::size_t  N>
-void vichet(std::bitset<N> result_vector) {
+int vichet(std::bitset<N> result_vector) {
 
     std::bitset<15> res, obr_polinom("10011");
 
@@ -22,16 +24,23 @@ void vichet(std::bitset<N> result_vector) {
             res <<= 1;
         }
     }
-
     std::cout << "Синдром ошибки:                    " << result_vector << std::endl << std::endl;
+    return result_vector.to_ulong();
 }
 
+template <std::size_t  N>
+void ispravlenie(std::bitset<5> sindrom, std::bitset<N> *result_vector) {
 
+}
+
+// Функция, которая портит информационный вектор и исправляет
+// Смежные вызовы: vichet, ispravlenie
 template <std::size_t N>
 void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset<N> code_vector) {
-    e = v;
+    std::bitset<5> sindrom;
 
     // Портим информационный вектор
+    e = v;
     result_vector = e ^ code_vector;
 
     std::cout << "Информационная последовательность: " << code_vector << std::endl <<
@@ -39,8 +48,9 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
                  "Принятая последовательность:       " << result_vector << std::endl;
 
     // Делим порченный информационный вектор на образующий полином
-    vichet(result_vector);
-    std::cout << "result: " << result_vector;
+    sindrom = vichet(result_vector);
+    std::cout << "result: " << result_vector << std::endl <<
+                  "sindrom: " << sindrom;
 }
 
 // Функция заполнения таблички с векторами синдромов s
