@@ -8,8 +8,7 @@ void vichet(std::bitset<N> result_vector) {
     std::bitset<15> res, obr_polinom("10011");
 
     obr_polinom <<= 10;
-    std:: cout << "obr polinom: " << obr_polinom << std::endl
-                << "vector delimiy: " << result_vector << std::endl;
+    std:: cout << "Образующий полином:                " << obr_polinom << std::endl;
 
     for (int i = 14; i >= 4; i--) {
         if (result_vector[i] == 1) {
@@ -24,8 +23,7 @@ void vichet(std::bitset<N> result_vector) {
         }
     }
 
-    std::cout << result_vector << std::endl << std::endl;
-
+    std::cout << "Синдром ошибки:                    " << result_vector << std::endl << std::endl;
 }
 
 
@@ -35,15 +33,14 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
 
     // Портим информационный вектор
     result_vector = e ^ code_vector;
-    std::cout << "code: " << code_vector << std::endl <<
-                "e: " << e << std::endl << "result: " << result_vector << std::endl;
+
+    std::cout << "Информационная последовательность: " << code_vector << std::endl <<
+                 "Вектор ошибки:                     " << e << std::endl <<
+                 "Принятая последовательность:       " << result_vector << std::endl;
+
     // Делим порченный информационный вектор на образующий полином
-
-
     vichet(result_vector);
     std::cout << "result: " << result_vector;
-
-    //std::cout << result_vector << std::endl;
 }
 
 // Функция заполнения таблички с векторами синдромов s
@@ -53,10 +50,9 @@ void fulfillment(std::map<int, std::bitset<5>> *s) {
     for (int i = 1; i <= 15; i++) {
         s->insert(std::pair<int, std::bitset<5>> (i-1, i));
     }
-    for (auto it = s->begin(); it != s->end(); it++) {
-        std:: cout << it->first << ":" << it->second << std::endl;
-    }
-
+    //for (auto it = s->begin(); it != s->end(); it++) {
+     //   std:: cout << it->first << " : " << it->second << std::endl;
+    //}
 }
 
 int main() {
