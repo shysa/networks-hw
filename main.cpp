@@ -1,8 +1,20 @@
 #include <iostream>
 #include <bitset>
-#include <map>
+#include <cmath>
 
-// Функция, определяющая вычет (остаток от деления с XOR)
+// Факториал
+int factorial(int n)
+{
+    if (n == 1)
+        return 1;
+    else
+        return n * factorial(n - 1);
+}
+void fulfillment(int *Cin, int i) {
+    Cin[i] = factorial(15) / (factorial(15 - i) * factorial(i));
+}
+
+// Функция, вычисляющая вычет (остаток от деления с XOR)
 // ОПРЕДЕЛЯЕТ ОБРАЗУЮЩИЙ ПОЛИНОМ
 template <std::size_t  N>
 int vichet(std::bitset<N> result_vector) {
@@ -28,15 +40,16 @@ int vichet(std::bitset<N> result_vector) {
     return result_vector.to_ulong();
 }
 
+// Инвертирует бит по синдрому
+// Исправляет одну ошибку
 template <std::size_t  N>
 void ispravlenie(std::bitset<5> sindrom, std::bitset<N> *result_vector) {
-
+    result_vector->flip(sindrom.to_ulong() - 1);
 }
 
-// Функция, которая портит информационный вектор и исправляет
-// Смежные вызовы: vichet, ispravlenie
+// Функция, которая портит информационный вектор и исправляет его
 template <std::size_t N>
-void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset<N> code_vector) {
+void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset<N> code_vector, int i) {
     std::bitset<5> sindrom;
 
     // Портим информационный вектор
@@ -47,23 +60,23 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
                  "Вектор ошибки:                     " << e << std::endl <<
                  "Принятая последовательность:       " << result_vector << std::endl;
 
-    // Делим порченный информационный вектор на образующий полином
-    sindrom = vichet(result_vector);
-    std::cout << "result: " << result_vector << std::endl <<
-                  "sindrom: " << sindrom;
-}
-
-// Функция заполнения таблички с векторами синдромов s
-// На вход: map<разряд с ошибкой в коде, синдром>
-void fulfillment(std::map<int, std::bitset<5>> *s) {
-
-    for (int i = 1; i <= 15; i++) {
-        s->insert(std::pair<int, std::bitset<5>> (i-1, i));
+    // Делим порченный информационный вектор на образующий полином и получаем синдром
+    // столько раз, сколько ошибок в векторе е(х)
+    // если синдром = 0, то считаем что ошибок больше нет и исправлять нечего - выходим
+    for (i; i >= 1; i--) {
+        sindrom = 0;
+        sindrom = vichet(result_vector);
+        std::cout << "result: " << result_vector << std::endl <<
+                  "sindrom: " << sindrom << std::endl;
+        if (sindrom != 0) {
+            ispravlenie(sindrom, &result_vector);
+            std::cout << "result: " << result_vector << std::endl;
+        }
+        else break;
     }
-    //for (auto it = s->begin(); it != s->end(); it++) {
-     //   std:: cout << it->first << " : " << it->second << std::endl;
-    //}
 }
+
+
 
 int main() {
 
@@ -71,13 +84,9 @@ int main() {
 
     std::bitset<11> inf_vector("1010011");
     std::bitset<15> result_vector, e, code_vector("000010100110111");
-    int N[size], Ck[size], Cim[size];
+    static int N[size], Ck[size], Cin[size];
 
-    std::map<int, std::bitset<5>> s;
-    fulfillment(&s);
-
-
-    for (int i = 1; i <= 1; i++) {
+    for (int i = 1; i <= 2; i++) {
         // Цикл перебора комбинаций ошибок
         // v - вектор, состоящий из 1 по количеству ошибок n
         // t - вектор, смещающий крайнюю единицу
@@ -87,13 +96,17 @@ int main() {
 
             if (t == 1 << size) {
                 v = (1 << i) - 1;
-                get_info(e, v, result_vector, code_vector);
+                get_info(e, v, result_vector, code_vector, i);
                 break;
             }
-
-            //get_info(e, v, result_vector, code_vector);
+            //get_info(e, v, result_vector, code_vector, i);
         }
+
+        //fulfillment(Cin, i);
+
     }
+
+    //std::cout << Cin[1] << " " << Cin[2];
 
 
 
