@@ -11,6 +11,8 @@ iostream
 -
 bitset
 -
-map
+cmath
+-
+iomanip
 -
 
