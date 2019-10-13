@@ -3,6 +3,9 @@
 #include <cmath>
 #include <iomanip>
 
+// ОПРЕДЕЛЯЕТ ОБРАЗУЮЩИЙ ПОЛИНОМ
+#define polinom "10011"
+
 // Факториал
 double factorial(int n)
 {
@@ -20,11 +23,10 @@ void fulfillment(int *Cin, int i) {
 
 
 // Функция, вычисляющая вычет (остаток от деления с XOR)
-// ОПРЕДЕЛЯЕТ ОБРАЗУЮЩИЙ ПОЛИНОМ
 template <std::size_t  N>
 int vichet(std::bitset<N> result_vector) {
 
-    std::bitset<15> res, obr_polinom("10011");
+    std::bitset<15> res, obr_polinom(polinom);
 
     obr_polinom <<= 10;
     //std:: cout << "Образующий полином:                " << obr_polinom << std::endl;
@@ -64,7 +66,7 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
     result_vector = e ^ code_vector;
 
     //std::cout << "Информационная последовательность: " << code_vector << std::endl <<
-    //            "Вектор ошибки:                     " << e << std::endl <<
+    //             "Вектор ошибки:                     " << e << std::endl <<
     //             "Принятая последовательность:       " << result_vector << std::endl;
 
     // Делим порченный информационный вектор на образующий полином и получаем синдром
@@ -88,15 +90,27 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
 }
 
 
+// Функция кодирования
+template <std::size_t N>
+std::bitset<N> kodirovanie(int inf_vector) {
+    inf_vector <<= 4;
+    return  inf_vector ^= vichet(std::bitset<15> (inf_vector));
+}
+
 
 int main() {
 
     #define size 16
 
     std::bitset<11> inf_vector("1010011");
-    std::bitset<15> result_vector, e, code_vector("000010100110111");
+    std::bitset<15> result_vector, e, code_vector;
     static int N[size], Cin[size];
     double Ck[size];
+
+    code_vector = kodirovanie<15>(inf_vector.to_ulong());
+    std::cout << "Информационная последовательность: " << inf_vector << std::endl <<
+                 "Образующий полином:                " << polinom << std::endl <<
+                 "Закодированная последовательность: " << code_vector << std::endl;
 
     for (int i = 1; i <= 15; i++) {
         // Цикл перебора комбинаций ошибок
