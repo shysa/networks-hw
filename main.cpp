@@ -72,8 +72,8 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
     // Делим порченный информационный вектор на образующий полином и получаем синдром
     // столько раз, сколько ошибок в векторе е(х)
     // если синдром = 0, то считаем что ошибок больше нет и исправлять нечего - выходим
-    for (int j = i; j >= 1; j--) {
-        sindrom = 0;
+    //for (int j = i; j >= 1; j--) {
+      //  sindrom = 0;
         sindrom = vichet(result_vector);
         //std::cout << "result: " << result_vector << std::endl <<
         //          "sindrom: " << sindrom << std::endl;
@@ -81,14 +81,32 @@ void get_info(std::bitset<N> e, int v, std::bitset<N> result_vector, std::bitset
             ispravlenie(sindrom, &result_vector);
             //std::cout << "result: " << result_vector << std::endl;
         }
-        else break;
-    }
+        //else break;
+   // }
 
     if (result_vector.to_ulong() == code_vector.to_ulong()) {
         Nk[i]++;
     }
 }
 
+template <std::size_t N>
+void dekodirovanie(std::bitset<N> e, std::bitset<N> result_vector, std::bitset<N> code_vector, int i) {
+    i = e.count();
+    result_vector = e ^ code_vector;
+    std::bitset<5> sindrom;
+
+    //for (int j = i; j >= 1; j--) {
+        //sindrom = 0;
+        sindrom = vichet(result_vector);
+        if (sindrom != 0) {
+            ispravlenie(sindrom, &result_vector);
+        }
+        //else break;
+    //  }
+
+    std::cout << "Декодированная последовательность: " << result_vector << std::endl <<
+                 "Вектор ошибки:                     " << e << std::endl;
+}
 
 // Функция кодирования
 template <std::size_t N>
@@ -101,6 +119,7 @@ std::bitset<N> kodirovanie(int inf_vector) {
 int main() {
 
     #define size 16
+    #define error "00000000010000"
 
     std::bitset<11> inf_vector("1010011");
     std::bitset<15> result_vector, e, code_vector;
@@ -111,6 +130,7 @@ int main() {
     std::cout << "Информационная последовательность: " << inf_vector << std::endl <<
                  "Образующий полином:                " << polinom << std::endl <<
                  "Закодированная последовательность: " << code_vector << std::endl;
+    dekodirovanie<15>(std::bitset<15> (error), result_vector, code_vector, 0);
 
     for (int i = 1; i <= 15; i++) {
         // Цикл перебора комбинаций ошибок
